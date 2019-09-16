@@ -2,7 +2,6 @@
 {
     using HowOldAreyou.Models;
     using Newtonsoft.Json;
-    using System;
     using System.IO;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -10,15 +9,14 @@
 
     public class FaceService
     {
-        private static readonly string subscriptionKey = "68933cde15aa48f98568c1b35f8ef96c";
-        //private static string uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect";
-        private static string uriBase = "https://dev-josearias210.cognitiveservices.azure.com/face/v1.0/detect";
+        private static readonly string subscriptionKey = "YOUR_KEY";
+        private static readonly string uriBase = "YOUR_URL_ENDPOINT";
         public async Task<double> DetectAge(string imageFilePath)
         {
             double age = 0;
             try
             {
-                HttpClient client = new HttpClient();
+                var client = new HttpClient();
 
                 client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
 
@@ -44,7 +42,7 @@
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
             }
 
@@ -53,14 +51,13 @@
 
         private byte[] GetImageAsByteArray(string imageFilePath)
         {
-            using (FileStream fileStream =
-                new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
             {
-                BinaryReader binaryReader = new BinaryReader(fileStream);
-                return binaryReader.ReadBytes((int)fileStream.Length);
+                using (BinaryReader binaryReader = new BinaryReader(fileStream))
+                {
+                    return binaryReader.ReadBytes((int)fileStream.Length);
+                }
             }
         }
-
-
     }
 }
